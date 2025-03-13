@@ -1,0 +1,6 @@
+beautifulsoup4~=4.12.3
+Scrapy~=2.11.2
+scrapy-playwright~=0.0.23
+playwright~=1.48.0
+requests~=2.32.3
+pylint~=3.2.7

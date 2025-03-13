@@ -1,0 +1,66 @@
+version: '3.8'
+
+volumes:
+  ria-project-data:
+  postgres-data:
+
+services:
+  ria-project:
+    build:
+      context: .
+    command: python scrapy_project/main.py
+#    command: sleep infinity
+    container_name: 'ria-project'
+    restart: 'unless-stopped'
+    volumes:
+      - .:/app
+    ports:
+      - '8000:8000'
+    environment:
+      PYTHONUNBUFFERED: 1
+      TZ: Europe/Tallinn
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: scrapy_metadata
+      CONCURRENT_REQUESTS: 48
+      CONCURRENT_REQUESTS_PER_DOMAIN: 24
+      CONCURRENT_REQUESTS_PER_IP: 24
+      REACTOR_THREADPOOL_MAXSIZE: 30
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14
+    container_name: 'ria-project-postgres'
+    restart: 'unless-stopped'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: scrapy_metadata
+    ports:
+      - '5432:5432'
+
+  parser:
+    build:
+      context: .
+#    command: python parse_raw_data.py
+    command: sleep infinity
+    container_name: 'ria-project-parser'
+    restart: 'unless-stopped'
+    volumes:
+      - .:/app
+    depends_on:
+      - ria-project
+      - postgres
+    environment:
+      - RAW_DATA_DIR=/app/data
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=scrapy_metadata
+      - TZ=Europe/Tallinn
