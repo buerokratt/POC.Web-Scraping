@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+beautifulsoup4 = "~=4.12.3"
+scrapy = "~=2.11.2"
+scrapy-playwright = "~=0.0.23"
+playwright = "~=1.48.0"
+requests = "~=2.32.3"
+pylint = "~=3.2.7"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.13"
